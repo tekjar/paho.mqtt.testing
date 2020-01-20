@@ -120,7 +120,7 @@ class Test(unittest.TestCase):
         aclient.subscribe([topics[0]], [2])
         aclient.publish(topics[0], b"qos 0")
         aclient.publish(topics[0], b"qos 1", 1)
-        aclient.publish(topics[0], b"qos 2", 2)
+        aclient.publish(topics[0], b"qos 1", 1)
         time.sleep(2)
         aclient.disconnect()
         self.assertEqual(len(callback.messages), 3)
