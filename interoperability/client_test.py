@@ -209,30 +209,23 @@ class Test(unittest.TestCase):
     #  return succeeded
 
     ## 0 length clientid
-    #def test_zero_length_clientid(self):
-    #  print("Zero length clientid test starting")
-    #  succeeded = True
-    #  try:
-    #    client0 = mqtt_client.Client("")
-    #    fails = False
-    #    try:
-    #      client0.connect(host=host, port=port, cleansession=False) # should be rejected
-    #    except:
-    #      fails = True
-    #    self.assertEqual(fails, True)
-    #    fails = False
-    #    try:
-    #      client0.connect(host=host, port=port, cleansession=True) # should work
-    #    except:
-    #      fails = True
-    #    self.assertEqual(fails, False)
-    #    client0.disconnect()
-    #  except:
-    #    traceback.print_exc()
-    #    succeeded = False
-    #  print("Zero length clientid test", "succeeded" if succeeded else "failed")
-    #  self.assertEqual(succeeded, True)
-    #  return succeeded
+    def test_zero_length_clientid(self):
+      print("Zero length clientid test starting")
+      succeeded = True
+      try:
+        client0 = mqtt_client.Client("")
+        fails = False
+        try:
+          client0.connect(host=host, port=port, cleansession=False) # should be rejected
+        except:
+          fails = True
+        self.assertEqual(fails, True)
+      except:
+        traceback.print_exc()
+        succeeded = False
+      print("Zero length clientid test", "succeeded" if succeeded else "failed")
+      self.assertEqual(succeeded, True)
+      return succeeded
 
     #def test_offline_message_queueing(self):
     #  succeeded = True
