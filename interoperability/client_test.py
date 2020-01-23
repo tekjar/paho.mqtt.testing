@@ -143,47 +143,49 @@ class Test(unittest.TestCase):
       self.assertEqual(succeeded, True)
       return succeeded
 
-    #def test_retained_messages(self):
-    #  qos0topic="fromb/qos 0"
-    #  qos1topic="fromb/qos 1"
-    #  qos2topic="fromb/qos2"
-    #  wildcardtopic="fromb/+"
-    #  print("Retained message test starting")
-    #  succeeded = False
-    #  try:
-    #    # retained messages
-    #    callback.clear()
-    #    connack = aclient.connect(host=host, port=port, cleansession=True)
-    #    assert connack.flags == 0x00 # Session present
-    #    aclient.publish(topics[1], b"qos 0", 0, retained=True)
-    #    aclient.publish(topics[2], b"qos 1", 1, retained=True)
-    #    aclient.publish(topics[3], b"qos 2", 2, retained=True)
-    #    time.sleep(1)
-    #    aclient.subscribe([wildtopics[5]], [2])
-    #    time.sleep(1)
-    #    aclient.disconnect()
+    def test_retained_messages(self):
+      qos0topic="fromb/qos 0"
+      qos1topic="fromb/qos 1"
+      qos2topic="fromb/qos2"
+      wildcardtopic="fromb/+"
+      print("Retained message test starting")
+      succeeded = False
+      try:
+        # retained messages
+        callback.clear()
+        connack = aclient.connect(host=host, port=port, cleansession=True)
+        assert connack.flags == 0x00 # Session present
+        aclient.publish(topics[1], b"qos 0", 0, retained=True)
+        aclient.publish(topics[2], b"qos 1", 1, retained=True)
+        aclient.publish(topics[3], b"qos 2", 1, retained=True)
+        time.sleep(1)
+        aclient.subscribe([wildtopics[5]], [2])
+        time.sleep(1)
+        aclient.disconnect()
 
-    #    assert len(callback.messages) == 3
+        print(len(callback.messages))
+        assert len(callback.messages) == 3
 
-    #    # clear retained messages
-    #    callback.clear()
-    #    connack = aclient.connect(host=host, port=port, cleansession=True)
-    #    assert connack.flags == 0x00 # Session present
-    #    aclient.publish(topics[1], b"", 0, retained=True)
-    #    aclient.publish(topics[2], b"", 1, retained=True)
-    #    aclient.publish(topics[3], b"", 2, retained=True)
-    #    time.sleep(1) # wait for QoS 2 exchange to be completed
-    #    aclient.subscribe([wildtopics[5]], [2])
-    #    time.sleep(1)
-    #    aclient.disconnect()
+        # clear retained messages
+        callback.clear()
+        connack = aclient.connect(host=host, port=port, cleansession=True)
+        assert connack.flags == 0x00 # Session present
+        aclient.publish(topics[1], b"", 0, retained=True)
+        aclient.publish(topics[2], b"", 1, retained=True)
+        aclient.publish(topics[3], b"", 1, retained=True)
+        time.sleep(1) # wait for QoS 2 exchange to be completed
+        aclient.subscribe([wildtopics[5]], [2])
+        time.sleep(1)
+        aclient.disconnect()
 
-    #    assert len(callback.messages) == 0, "callback messages is %s" % callback.messages
-    #    succeeded = True
-    #  except:
-    #    traceback.print_exc()
-    #  print("Retained message test", "succeeded" if succeeded else "failed")
-    #  self.assertEqual(succeeded, True)
-    #  return succeeded
+        print(len(callback.messages))
+        assert len(callback.messages) == 0, "callback messages is %s" % callback.messages
+        succeeded = True
+      except:
+        traceback.print_exc()
+      print("Retained message test", "succeeded" if succeeded else "failed")
+      self.assertEqual(succeeded, True)
+      return succeeded
 
     #def will_message_test(self):
     #  # will messages
