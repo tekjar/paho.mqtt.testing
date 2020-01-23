@@ -187,28 +187,28 @@ class Test(unittest.TestCase):
       self.assertEqual(succeeded, True)
       return succeeded
 
-    #def will_message_test(self):
-    #  # will messages
-    #  succeeded = True
-    #  callback2.clear()
-    #  assert len(callback2.messages) == 0, callback2.messages
-    #  try:
-    #    connack = aclient.connect(host=host, port=port, cleansession=True, willFlag=True,
-    #      willTopic=topics[2], willMessage=b"client not disconnected", keepalive=2)
-    #    assert connack.flags == 0x00 # Session present
-    #    connack = bclient.connect(host=host, port=port, cleansession=False)
-    #    bclient.subscribe([topics[2]], [2])
-    #    time.sleep(.1)
-    #    aclient.terminate()
-    #    time.sleep(5)
-    #    bclient.disconnect()
-    #    assert len(callback2.messages) == 1, callback2.messages  # should have the will message
-    #  except:
-    #    traceback.print_exc()
-    #    succeeded = False
-    #  print("Will message test", "succeeded" if succeeded else "failed")
-    #  self.assertEqual(succeeded, True)
-    #  return succeeded
+    def will_message_test(self):
+      # will messages
+      succeeded = True
+      callback2.clear()
+      assert len(callback2.messages) == 0, callback2.messages
+      try:
+        connack = aclient.connect(host=host, port=port, cleansession=True, willFlag=True,
+          willTopic=topics[2], willQoS=1, willMessage=b"client not disconnected", keepalive=2)
+        assert connack.flags == 0x00 # Session present
+        connack = bclient.connect(host=host, port=port, cleansession=False)
+        bclient.subscribe([topics[2]], [2])
+        time.sleep(.1)
+        aclient.terminate()
+        time.sleep(5)
+        bclient.disconnect()
+        assert len(callback2.messages) == 1, callback2.messages  # should have the will message
+      except:
+        traceback.print_exc()
+        succeeded = False
+      print("Will message test", "succeeded" if succeeded else "failed")
+      self.assertEqual(succeeded, True)
+      return succeeded
 
     ## 0 length clientid
     def test_zero_length_clientid(self):
