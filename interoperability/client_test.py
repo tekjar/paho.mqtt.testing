@@ -342,24 +342,24 @@ class Test(unittest.TestCase):
       self.assertEqual(succeeded, True)
       return succeeded
 
-    #def test_subscribe_failure(self):
-    #  # Subscribe failure.  A new feature of MQTT 3.1.1 is the ability to send back negative reponses to subscribe
-    #  # requests.  One way of doing this is to subscribe to a topic which is not allowed to be subscribed to.
-    #  print("Subscribe failure test starting")
-    #  succeeded = True
-    #  try:
-    #    callback.clear()
-    #    aclient.connect(host=host, port=port)
-    #    aclient.subscribe([nosubscribe_topics[0]], [2])
-    #    time.sleep(.2)
-    #    # subscribeds is a list of (msgid, [qos])
-    #    assert callback.subscribeds[0][1][0] == 0x80, "return code should be 0x80 %s" % callback.subscribeds
-    #  except:
-    #    traceback.print_exc()
-    #    succeeded = False
-    #  print("Subscribe failure test", "succeeded" if succeeded else "failed")
-    #  self.assertEqual(succeeded, True)
-    #  return succeeded
+    def test_subscribe_failure(self):
+      # Subscribe failure.  A new feature of MQTT 3.1.1 is the ability to send back negative reponses to subscribe
+      # requests.  One way of doing this is to subscribe to a topic which is not allowed to be subscribed to.
+      print("Subscribe failure test starting")
+      succeeded = True
+      try:
+        callback.clear()
+        aclient.connect(host=host, port=port)
+        aclient.subscribe(["wrong/wr#ng/filter"], [1])
+        time.sleep(.2)
+        # subscribeds is a list of (msgid, [qos])
+        assert callback.subscribeds[0][1][0] == 0x80, "return code should be 0x80 %s" % callback.subscribeds
+      except:
+        traceback.print_exc()
+        succeeded = False
+      print("Subscribe failure test", "succeeded" if succeeded else "failed")
+      self.assertEqual(succeeded, True)
+      return succeeded
 
 
     def test_dollar_topics(self):
