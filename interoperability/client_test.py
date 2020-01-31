@@ -323,10 +323,10 @@ class Test(unittest.TestCase):
         callback.clear()
         callback2.clear()
         bclient.connect(host=host, port=port, cleansession=False)
-        bclient.subscribe([wildtopics[6]], [2])
+        bclient.subscribe([wildtopics[6]], [1])
         bclient.pause() # stops responding to incoming publishes
         bclient.publish(topics[1], b"", 1, retained=False)
-        bclient.publish(topics[3], b"", 2, retained=False)
+        bclient.publish(topics[3], b"", 1, retained=False)
         time.sleep(1)
         bclient.disconnect()
         assert len(callback2.messages) == 0, "length should be 0: %s" % callback2.messages
@@ -362,57 +362,57 @@ class Test(unittest.TestCase):
     #  return succeeded
 
 
-    #def test_dollar_topics(self):
-    #  # $ topics. The specification says that a topic filter which starts with a wildcard does not match topic names that
-    #  # begin with a $.  Publishing to a topic which starts with a $ may not be allowed on some servers (which is entirely valid),
-    #  # so this test will not work and should be omitted in that case.
-    #  print("$ topics test starting")
-    #  succeeded = True
-    #  try:
-    #    callback2.clear()
-    #    bclient.connect(host=host, port=port, cleansession=True, keepalive=0)
-    #    bclient.subscribe([wildtopics[5]], [2])
-    #    time.sleep(1) # wait for all retained messages, hopefully
-    #    callback2.clear()
-    #    bclient.publish("$"+topics[1], b"", 1, retained=False)
-    #    time.sleep(.2)
-    #    assert len(callback2.messages) == 0, callback2.messages
-    #    bclient.disconnect()
-    #  except:
-    #    traceback.print_exc()
-    #    succeeded = False
-    #  print("$ topics test", "succeeded" if succeeded else "failed")
-    #  self.assertEqual(succeeded, True)
-    #  return succeeded
+    def test_dollar_topics(self):
+      # $ topics. The specification says that a topic filter which starts with a wildcard does not match topic names that
+      # begin with a $.  Publishing to a topic which starts with a $ may not be allowed on some servers (which is entirely valid),
+      # so this test will not work and should be omitted in that case.
+      print("$ topics test starting")
+      succeeded = True
+      try:
+        callback2.clear()
+        bclient.connect(host=host, port=port, cleansession=True, keepalive=0)
+        bclient.subscribe([wildtopics[5]], [1])
+        time.sleep(1) # wait for all retained messages, hopefully
+        callback2.clear()
+        bclient.publish("$"+topics[1], b"", 1, retained=False)
+        time.sleep(.2)
+        assert len(callback2.messages) == 0, callback2.messages
+        bclient.disconnect()
+      except:
+        traceback.print_exc()
+        succeeded = False
+      print("$ topics test", "succeeded" if succeeded else "failed")
+      self.assertEqual(succeeded, True)
+      return succeeded
 
-    #def test_unsubscribe(self):
-    #  print("Unsubscribe test")
-    #  succeeded = True
-    #  try:
-    #    callback2.clear()
-    #    bclient.connect(host=host, port=port, cleansession=True)
-    #    bclient.subscribe([topics[0]], [2])
-    #    bclient.subscribe([topics[1]], [2])
-    #    bclient.subscribe([topics[2]], [2])
-    #    time.sleep(1) # wait for all retained messages, hopefully
-    #    # Unsubscribed from one topic
-    #    bclient.unsubscribe([topics[0]])
+    def test_unsubscribe(self):
+      print("Unsubscribe test")
+      succeeded = True
+      try:
+        callback2.clear()
+        bclient.connect(host=host, port=port, cleansession=True)
+        bclient.subscribe([topics[0]], [2])
+        bclient.subscribe([topics[1]], [2])
+        bclient.subscribe([topics[2]], [2])
+        time.sleep(1) # wait for all retained messages, hopefully
+        # Unsubscribed from one topic
+        bclient.unsubscribe([topics[0]])
 
-    #    aclient.connect(host=host, port=port, cleansession=True)
-    #    aclient.publish(topics[0], b"", 1, retained=False)
-    #    aclient.publish(topics[1], b"", 1, retained=False)
-    #    aclient.publish(topics[2], b"", 1, retained=False)
-    #    time.sleep(2)
+        aclient.connect(host=host, port=port, cleansession=True)
+        aclient.publish(topics[0], b"", 1, retained=False)
+        aclient.publish(topics[1], b"", 1, retained=False)
+        aclient.publish(topics[2], b"", 1, retained=False)
+        time.sleep(2)
 
-    #    bclient.disconnect()
-    #    aclient.disconnect()
-    #    self.assertEqual(len(callback2.messages), 2, callback2.messages)
-    #  except:
-    #    traceback.print_exc()
-    #    succeeded = False
-    #  self.assertEqual(succeeded, True)
-    #  print("unsubscribe tests", "succeeded" if succeeded else "failed")
-    #  return succeeded
+        bclient.disconnect()
+        aclient.disconnect()
+        self.assertEqual(len(callback2.messages), 2, callback2.messages)
+      except:
+        traceback.print_exc()
+        succeeded = False
+      self.assertEqual(succeeded, True)
+      print("unsubscribe tests", "succeeded" if succeeded else "failed")
+      return succeeded
 
 
 if __name__ == "__main__":
