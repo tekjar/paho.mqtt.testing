@@ -159,7 +159,7 @@ class Test(unittest.TestCase):
         aclient.publish(topics[2], b"qos 1", 1, retained=True)
         aclient.publish(topics[3], b"qos 2", 1, retained=True)
         time.sleep(1)
-        aclient.subscribe([wildtopics[5]], [2])
+        aclient.subscribe([wildtopics[5]], [1])
         time.sleep(1)
         aclient.disconnect()
 
@@ -174,7 +174,7 @@ class Test(unittest.TestCase):
         aclient.publish(topics[2], b"", 1, retained=True)
         aclient.publish(topics[3], b"", 1, retained=True)
         time.sleep(1) # wait for QoS 2 exchange to be completed
-        aclient.subscribe([wildtopics[5]], [2])
+        aclient.subscribe([wildtopics[5]], [1])
         time.sleep(1)
         aclient.disconnect()
 
@@ -262,34 +262,34 @@ class Test(unittest.TestCase):
       self.assertEqual(succeeded, True)
       return succeeded
 
-    #def test_overlapping_subscriptions(self):
-    #  # overlapping subscriptions. When there is more than one matching subscription for the same client for a topic,
-    #  # the server may send back one message with the highest QoS of any matching subscription, or one message for
-    #  # each subscription with a matching QoS.
-    #  print("Overlapping subscriptions test starting")
-    #  succeeded = True
-    #  try:
-    #    callback.clear()
-    #    callback2.clear()
-    #    aclient.connect(host=host, port=port)
-    #    aclient.subscribe([wildtopics[6], wildtopics[0]], [2, 1])
-    #    aclient.publish(topics[3], b"overlapping topic filters", 2)
-    #    time.sleep(1)
-    #    assert len(callback.messages) in [1, 2]
-    #    if len(callback.messages) == 1:
-    #      print("This server is publishing one message for all matching overlapping subscriptions, not one for each.")
-    #      assert callback.messages[0][2] == 2
-    #    else:
-    #      print("This server is publishing one message per each matching overlapping subscription.")
-    #      assert (callback.messages[0][2] == 2 and callback.messages[1][2] == 1) or \
-    #             (callback.messages[0][2] == 1 and callback.messages[1][2] == 2), callback.messages
-    #    aclient.disconnect()
-    #  except:
-    #    traceback.print_exc()
-    #    succeeded = False
-    #  print("Overlapping subscriptions test", "succeeded" if succeeded else "failed")
-    #  self.assertEqual(succeeded, True)
-    #  return succeeded
+    def test_overlapping_subscriptions(self):
+      # overlapping subscriptions. When there is more than one matching subscription for the same client for a topic,
+      # the server may send back one message with the highest QoS of any matching subscription, or one message for
+      # each subscription with a matching QoS.
+      print("Overlapping subscriptions test starting")
+      succeeded = True
+      try:
+        callback.clear()
+        callback2.clear()
+        aclient.connect(host=host, port=port)
+        aclient.subscribe([wildtopics[6], wildtopics[0]], [0, 1])
+        aclient.publish(topics[3], b"overlapping topic filters", 1)
+        time.sleep(1)
+        assert len(callback.messages) in [1, 2]
+        if len(callback.messages) == 1:
+          print("This server is publishing one message for all matching overlapping subscriptions, not one for each.")
+          assert callback.messages[0][2] == 1
+        else:
+          print("This server is publishing one message per each matching overlapping subscription.")
+          assert (callback.messages[0][2] == 2 and callback.messages[1][2] == 1) or \
+                 (callback.messages[0][2] == 1 and callback.messages[1][2] == 2), callback.messages
+        aclient.disconnect()
+      except:
+        traceback.print_exc()
+        succeeded = False
+      print("Overlapping subscriptions test", "succeeded" if succeeded else "failed")
+      self.assertEqual(succeeded, True)
+      return succeeded
 
 
     def test_keepalive(self):
@@ -391,9 +391,9 @@ class Test(unittest.TestCase):
       try:
         callback2.clear()
         bclient.connect(host=host, port=port, cleansession=True)
-        bclient.subscribe([topics[0]], [2])
-        bclient.subscribe([topics[1]], [2])
-        bclient.subscribe([topics[2]], [2])
+        bclient.subscribe([topics[0]], [1])
+        bclient.subscribe([topics[1]], [1])
+        bclient.subscribe([topics[2]], [1])
         time.sleep(1) # wait for all retained messages, hopefully
         # Unsubscribed from one topic
         bclient.unsubscribe([topics[0]])
